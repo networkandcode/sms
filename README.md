@@ -1,2 +1,2 @@
 # sms
-School management software, developed for the Linode Hackathon at Hahsnode
+School management software, developed for the Linode Hackathon at Hashnode
