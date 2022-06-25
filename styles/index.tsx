@@ -1,0 +1,5 @@
+export const divGrid: string = "gap-2 grid grid-cols-2 mt-8 mx-2 text-center md:grid-cols-4"
+export const formInput: string = "border m-2 p-2 rounded focus:outline-purple-500"
+export const gridLink = "border-2 p-2 rounded hover:bg-purple-500 hover:text-white"
+export const addButton = "bg-gray-500 h-7 rounded-full text-center text-white w-7 disabled:hover:bg-gray-500 hover:bg-purple-500"
+export const rmButton = "bg-gray-500 h-7 rounded-full text-center text-white w-7 disabled:hover:bg-gray-500 hover:bg-red-500"
