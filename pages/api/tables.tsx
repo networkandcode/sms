@@ -2,7 +2,7 @@ import { tables } from '../../constants'
 import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default (req: NextApiRequest, res:NextApiResponse) => {
+const api = (req: NextApiRequest, res:NextApiResponse) => {
     const { HARPERDB_PASSWORD, HARPERDB_URL, HARPERDB_USERNAME  } = process.env
     
     tables.forEach(table => {
@@ -36,3 +36,4 @@ export default (req: NextApiRequest, res:NextApiResponse) => {
     })
 }
 
+export default api

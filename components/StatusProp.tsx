@@ -1,9 +1,7 @@
 import { useAuthContext } from '../hooks/useAuth'
 import { useEffect } from 'react'
 
-const Status = ({ status }) => {
-    
-        
+const Status = ({ status }: any) => {  
     return (
         
             <div className="italic h-5">

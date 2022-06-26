@@ -1,4 +1,5 @@
-import Status from '../../components/Status'
+import StatusProp from '../../components/StatusProp'
+import { initialStatusData } from '../../types'
 import { appwrite } from '../../utils/appwrite'
 import axios from 'axios'
 import Link from 'next/link'
@@ -9,23 +10,13 @@ import useSWR from 'swr'
 
 const Members: NextPage = () => {
     const router = useRouter()
-    const { team } = router.query
+    const { team }: any = router.query
     
-    const [ status, setStatus ] = useState({
-        res: '',
-        err: ''
-    })
-    const [ member, setMember ] = useState({})
+    const [ status, setStatus ] = useState({ ...initialStatusData })
+    const [ member, setMember ] = useState<any>({})
     const [ members, setMembers ] = useState([])
     const [ remainingUsers, setRemainingUsers ] = useState([])
     const [ users, setUsers ] = useState([])
-    
-    const clearStatus = () => {
-        setStatus({
-            res: '',
-            err: ''
-        })
-    }
     
     const onChangeName = e => {
         e.preventDefault()
@@ -40,31 +31,28 @@ const Members: NextPage = () => {
         value  = value.toLowerCase()
      
         if(members.every(m => m.email !== value)) {
-            clearStatus()
+            setStatus({ ...initialStatusData })
             setMember({ ...member, [ name ]:  value })
         } else {
-            setStatus({
-                err: `${value} exists...`
-            })
+            setStatus({ ...initialStatusData,  err: `${value} exists...` })
         }
     }
 
     const addMember = u  => {
-        console.log(u)
         const { email, name } = u
         let promise = appwrite.teams.createMembership(team, email, [ 'member' ], process.env.NEXT_PUBLIC_APPWRITE_NEW_MEMBER_URL, name);
         
         promise.then(function (response) {
             setMembers([ ...members, { userEmail: email, userName: name } ])
-            console.log('clear member')
             setMember({})
         }, function (error) {
             console.log(error); // Failure
         });
     }
     
-    const rmMember = (t: string) => {
-        let promise = appwrite.members.delete(t)
+    const rmMember = (t: any) => {
+        console.log('member', t)
+        let promise = appwrite.teams.deleteMembership(team, t.$id)
         
         promise.then( res => {
             let temp = [ ...members ]
@@ -73,16 +61,12 @@ const Members: NextPage = () => {
             if(idx !== -1){
                 temp.splice(idx, 1)
                 setMembers([ ...temp ])
-                setStatus({
-                    err: 'Member deleted successfully...'
-                })
+                setStatus({ ...initialStatusData, err: 'Member deleted successfully...' })
                 setMember({})
             }
             
         }, err => {
-            setStatus({
-                err: err.message
-            })
+            setStatus({ ...initialStatusData, err: err.message })
         })
         
     }
@@ -91,7 +75,6 @@ const Members: NextPage = () => {
         let promise = appwrite.teams.getMemberships(team)
         
         promise.then( res => {
-            console.log('res', res)
             let temp = []
             res.memberships.forEach( m => {
                 if(m.roles.includes('member')) {
@@ -101,13 +84,9 @@ const Members: NextPage = () => {
             
             setMembers([ ...temp ])
         
-            setStatus({
-                res: 'Retrieved member list successfully...'
-            })
+            setStatus({ ...initialStatusData, res: 'Retrieved member list successfully...' })
         }, err => {
-            setStatus({
-                err: err.message
-            })
+            setStatus({ ...initialStatusData, err: err.message })
         })
     }
     
@@ -117,9 +96,7 @@ const Members: NextPage = () => {
         })
     }
     
-    const updateUsers = () => {
-        console.log('update users', members)
-        
+    const updateUsers = () => {        
         let temp = []
         const teamSingular = team.slice(0, -1)
         
@@ -152,14 +129,14 @@ const Members: NextPage = () => {
     useEffect(() => {
         if(status?.res || status?.err) {
             setTimeout(() => {
-                clearStatus()
+                setStatus({ ...initialStatusData })
             }, 3000)
         }
     }, [ status ])
     
     return (
         <div className="m-auto max-w-xs text-md w-full">
-            <Status status={status} />
+            <StatusProp status={status} />
             <div className="mx-8">
                 <h1 className="font-bold mb-4 text-2xl text-purple-500"> Team {team} </h1>
                 

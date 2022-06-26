@@ -1,8 +1,7 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
-export default async ( req: NextApiRequest, res: NextApiResponse<Data> ) => {
+const api = async ( req: NextApiRequest, res: NextApiResponse ) => {
     const { method } = req
     const { conditions, get_attributes, operation, operator, schema, table } = req.body
     const dataJson =  { conditions, get_attributes, operation, operator, schema, table }
@@ -30,3 +29,5 @@ export default async ( req: NextApiRequest, res: NextApiResponse<Data> ) => {
         console.log(error)
       })
 }
+
+export default api

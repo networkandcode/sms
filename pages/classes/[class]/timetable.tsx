@@ -11,7 +11,7 @@ const TimeTable: NextPage = () => {
     
     const [ isSaveDisabled, setIsSaveDisabled ] = useState<boolean>(true)
     const [ operation, setOperation ] = useState<string>('update')
-    const [ record, setRecord ] = useState({
+    const [ record, setRecord ] = useState<any>({
         Monday: [],
         Tuesday: [],
         Wednesday: [],
@@ -79,7 +79,7 @@ const TimeTable: NextPage = () => {
     }
     
     useEffect(() => {
-        const cl = router.query.class
+        const cl: any = router.query.class
         if(cl) {
             getTimeTable(cl)
         }

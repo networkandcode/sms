@@ -5,17 +5,19 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 
 type Teacher = {
+    id: string
     schools: string[]
     subjects: string[]
 }
 
 const initialTeacherData: Teacher = {
+    id: '',
     schools: [],
     subjects: []
 }
 
 const TeacherForm: NextPage = () => {
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     const { user } = state
 
     const [ isSaveDisabled, setIsSaveDisabled ] = useState(true)
@@ -24,11 +26,11 @@ const TeacherForm: NextPage = () => {
     
     const allSchools = [ 'Pre-primary', 'Primary(1-4)', 'Middle(5-7)', 'Secondary(8-10)' ]
     
-    const onChange = e => {
+    const onChange = (e: any) => {
         e.preventDefault()
         const { name } = e.target
         
-        let value = Array.from(e.target.selectedOptions, option => option.value)
+        let value = Array.from(e.target.selectedOptions, (option: any) => option.value)
         setTeacher({ ...teacher, [ name ]: value })
         setIsSaveDisabled(false)
     }
@@ -43,7 +45,7 @@ const TeacherForm: NextPage = () => {
         ).then(res => {
             setTeachers(res.data)
             
-            res.data.forEach( t => {
+            res.data.forEach( (t: any) => {
                 if(t.id === user.$id) {
                     setTeacher({ ...teacher, ...t })
                 }
@@ -51,11 +53,11 @@ const TeacherForm: NextPage = () => {
         })
     }
     
-    const updateProfile = e => {
+    const updateProfile = (e: any) => {
         e.preventDefault()
         let operation = 'insert'
         
-        if(teachers.some(t => t.id === teacher.id)) {
+        if(teachers.some((t :any) => t.id === teacher.id)) {
             operation = 'update'
         }
         
@@ -78,7 +80,7 @@ const TeacherForm: NextPage = () => {
         if(user.$id) {
             getTeachers()
         }
-    }, [ user ])
+    }, [ getTeachers, user ])
     
     return (
         <div className="m-auto max-w-xs text-md w-full">

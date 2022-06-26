@@ -9,7 +9,7 @@ import styles from '../styles/Home.module.css'
 import { toTitleCase } from '../utils/functions'
 
 const Home: NextPage = () => {
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     const { user } = state
   
     const generateTables = e => {

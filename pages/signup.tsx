@@ -8,11 +8,10 @@ import { useEffect, useState } from 'react'
 
 const Login: NextPage = () => {
     const router = useRouter()
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     const { onChange, user, userSignup } = state
     
     useEffect(() => {
-       console.log(router, user)
        if(user.$id) {
            router.replace('/')
        } 
@@ -107,13 +106,13 @@ const Login: NextPage = () => {
                 
                 <button 
                     disabled={
-                        !user?.name?.length > 0
+                        !(user?.name?.length > 0)
                         ||
-                        !user?.username?.length > 0 
+                        !(user?.username?.length > 0)
                         || 
-                        !user?.password?.length > 0
+                        !(user?.password?.length > 0)
                         ||
-                        !user?.role?.length > 0
+                        !(user?.role?.length > 0)
                     } 
                     className="bg-purple-500 font-bold px-4 py-2 rounded text-white disabled:bg-gray-500 hover:bg-purple-600"
                     onClick={userSignup}

@@ -4,12 +4,13 @@ import { useStudentsContext } from '../../../hooks/useStudents'
 import { useAttendanceContext } from '../../../hooks/useAttendance'
 import { formInput } from '../../../styles'
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 
 const Attendance: NextPage = ()  => {
+    const router: any = useRouter()
+    const { students }: any = useStudentsContext()
     
-    const { students } = useStudentsContext()
-    
-    const state = useAttendanceContext()
+    const state: any = useAttendanceContext()
     const { absentList, addAttendance, attendance, attendanceList, onChangeAbsentList, onChangeDate, rmAttendance, status } = state
     
     if( !Object.values(state)) {
@@ -23,7 +24,7 @@ const Attendance: NextPage = ()  => {
     return (
         <form className="gap-4 grid grid-cols-1 m-auto p-8 text-md" onSubmit={addAttendance}>
         
-            <h1 className="text-purple-500 text-xl"> Attendance </h1>
+            <h1 className="font-bold text-purple-500 text-xl"> { router?.query?.class} Attendance </h1>
             
             <div>
                 <label htmlFor="date"> Date: </label>
@@ -56,7 +57,7 @@ const Attendance: NextPage = ()  => {
                 {(attendanceList?.length > 0) && <> Absence List: </> }
                 
                 <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
-                    { attendanceList?.sort((a, b) => ( new Date(b.date) - new Date(a.date) )).map( (a, idx) => (
+                    { attendanceList?.sort((a, b) => ( new Date(b.date).getTime() - new Date(a.date).getTime() )).map( (a, idx) => (
                         <div className="border-2 p-2 rounded hover:border-purple-500" key={`${a}-${idx}`}>
                             <div className="flex justify-between">
                                 <div>

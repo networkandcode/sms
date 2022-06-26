@@ -7,9 +7,9 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 const Children: NextPage = () => {
-    const authContext = useAuthContext()
+    const authContext: any = useAuthContext()
     const { user } = authContext
-    const [ parent, setParent ] = useState({})
+    const [ parent, setParent ] = useState<any>({})
     
     const getParent = async() => {
         await axios.post(
@@ -35,9 +35,9 @@ const Children: NextPage = () => {
 
     return (
         <div className="m-auto max-w-sm">
-            <p className="pt-2 text-2xl text-gray-500" > Children info </p>
+            <p className="p-2 text-2xl text-gray-500" > Children info </p>
             { parent?.children?.map( (child, idx) => (
-                <div className="border-b-2 my-2 py-2 rounded" key={`${child}-${idx}`} >
+                <div className="border-b-2 my-2 p-2 rounded" key={`${child}-${idx}`} >
                     <h1 className="mb-2 text-xl text-purple-500"> { child.name }, <span className="text-gray-500 text-sm"> { child.classWithSection } </span> </h1>
                     <Attendance classWithSection={child.classWithSection} name={child.name} />
                     <ExamScore classWithSection={child.classWithSection} name={child.name} />

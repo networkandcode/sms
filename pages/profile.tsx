@@ -7,23 +7,22 @@ import { useEffect, useState } from 'react'
 
 const Profile: NextPage = () => {
     const [ teams, setTeams ] = useState([])
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     const { user } = state
     
     const listTeams = () => {
         let promise = appwrite.teams.list()
         
         promise.then( res => {
-            console.log(res.teams)
             setTeams([ ...res.teams ])
-        }, err => {
-            console.log(err.message)
         })
     }
     
     useEffect(() => {
-        listTeams()
-    }, [])
+	if(user.$id){
+	    listTeams()
+        }
+    }, [ user ])
     
     return (
         <>

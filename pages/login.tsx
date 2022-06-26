@@ -3,19 +3,11 @@ import { appwrite } from '../utils/appwrite'
 
 import type { NextPage } from 'next'
 import Head from 'next/head'
-//import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 const Login: NextPage = () => {
-    //const router = useRouter()
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     const { onChange, user, userLogin } = state
-    
-    /*useEffect(() => {
-       if(user.$id) {
-           router.replace('/')
-       } 
-    },[ router, user ])*/
     
     if(user.$id) {
         return (
@@ -63,9 +55,9 @@ const Login: NextPage = () => {
                 
                 <button 
                     disabled={ 
-                        !user?.username?.length > 0 
+                        !(user?.username?.length > 0) 
                         || 
-                        !user?.password?.length > 0
+                        !(user?.password?.length > 0)
                     } 
                     className="bg-purple-500 font-bold px-4 py-2 rounded text-white disabled:bg-gray-500 hover:bg-purple-600" 
                     type="submit"

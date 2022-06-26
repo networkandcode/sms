@@ -13,7 +13,7 @@ const s3Client = new S3({
     }),
 })
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const api = async (req: NextApiRequest, res: NextApiResponse) => {
     const { base64Data, path, fileName } = req.body
     const paramsBody = base64Data.replace(/^data:image\/\w+;base64,/, '')
     
@@ -38,3 +38,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     })*/
     
 }
+
+export default api

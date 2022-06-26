@@ -4,30 +4,43 @@ import Link  from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
+type LinkClass = {
+    home: string
+    login: string
+    logout: string
+    profile: string
+    signup: string
+    verify: string
+}
+
+const initialLinkClassData = {
+    home: '',
+    login: '',
+    logout: '',
+    profile: '',
+    signup: '',
+    verify: ''
+}
+
 const NavBar: NextPage = () => {
     const router = useRouter()
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     
-    const [ linkClass, setLinkClass ] = useState({
-        home: '',
-        signup: '',
-        login: '',
-        logout: ''
-    })
+    const [ linkClass, setLinkClass ] = useState<LinkClass>(initialLinkClassData)
     
     useEffect(() => {
         if(router.route === '/') {
-            setLinkClass({ home: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
+            setLinkClass({ ...initialLinkClassData, home: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
         } else if(router.route === '/profile') {
-            setLinkClass({ profile: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
+            setLinkClass({ ...initialLinkClassData, profile: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
         } else if(router.route === '/signup') {
-            setLinkClass({ signup: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
+            setLinkClass({ ...initialLinkClassData, signup: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
         } else if(router.route === '/login') {
-            setLinkClass({ login: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
+            setLinkClass({ ...initialLinkClassData, login: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
         } else if(router.route === '/logout') {
-            setLinkClass({ logout: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
+            setLinkClass({ ...initialLinkClassData, logout: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
         } else if(router.route === '/verify') {
-            setLinkClass({ verify: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
+            setLinkClass({ ...initialLinkClassData, verify: 'bg-white inline-block px-3 py-1 rounded text-purple-500' })
         } 
     }, [ router ] )
     
@@ -39,7 +52,13 @@ const NavBar: NextPage = () => {
                 </a></Link>
             </div>
             
-            { !state?.user?.$id?.startsWith('admin-') && process.env.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS.split(',').every( adminEmail => adminEmail !== state?.user?.email ) && (
+            { 
+                !state?.user?.$id?.startsWith('admin-') 
+	        && 
+                process?.env?.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS?.split(',').every( adminEmail => adminEmail !== state?.user?.email )
+                &&
+                state?.user?.$id
+                && (
                 <div>
                     <Link href="/profile"><a className={linkClass.profile}>
                         Profile

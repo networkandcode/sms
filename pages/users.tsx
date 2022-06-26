@@ -1,3 +1,4 @@
+import { initialStatusData } from '../types'
 import { appwrite } from '../utils/appwrite'
 import axios from 'axios'
 import Link from 'next/link'
@@ -5,19 +6,9 @@ import { NextPage } from 'next/types'
 import { useEffect, useState } from 'react'
 
 const Users: NextPage = () => {
-    const [ status, setStatus ] = useState({
-        res: '',
-        err: ''
-    })
+    const [ status, setStatus ] = useState({ ...initialStatusData })
     const [ user, setUser ] = useState('')
     const [ users, setUsers ] = useState([])
-    
-    const clearStatus = () => {
-        setStatus({
-            res: '',
-            err: ''
-        })
-    }
     
     const onChange = e => {
         e.preventDefault()
@@ -25,10 +16,11 @@ const Users: NextPage = () => {
         value  = value.toLowerCase()
         
         if(!users.includes(value)) {
-            clearStatus()
+            setStatus({ ...initialStatusData })
             setUser(value)
         } else {
             setStatus({
+                ...initialStatusData,
                 err: `${value} exists...`
             })
         }
@@ -41,11 +33,13 @@ const Users: NextPage = () => {
         promise.then( res => {
             setUsers([ ...users, user ])
             setStatus({
+                ...initialStatusData,
                 res: 'User added successfully...'
             })
             
         }, err => {
             setStatus({
+                ...initialStatusData,
                 err: err.message
             })
         })
@@ -64,12 +58,14 @@ const Users: NextPage = () => {
                 temp.splice(idx, 1)
                 setUsers([ ...temp ])
                 setStatus({
+                    ...initialStatusData,
                     err: 'User deleted successfully...'
                 })
             }
             
         }, err => {
             setStatus({
+                ...initialStatusData,
                 err: err.message
             })
         })
@@ -89,10 +85,12 @@ const Users: NextPage = () => {
             setUsers([ ...temp ])
         
             setStatus({
+                ...initialStatusData,
                 res: 'Retrieved user list successfully...'
             })
         }, err => {
             setStatus({
+                ...initialStatusData,
                 err: err.message
             })
         })
@@ -102,7 +100,7 @@ const Users: NextPage = () => {
     useEffect(() => {
         if(status?.res || status?.err) {
             setTimeout(() => {
-                clearStatus()
+                setStatus({ ...initialStatusData })
             }, 3000)
         }
     }, [ status ])
@@ -114,11 +112,11 @@ const Users: NextPage = () => {
                     <input 
                         className="border mr-2 p-2 rounded focus:outline-purple-500" 
                         id="name"
-                        maxLength="15"
+                        maxLength={15}
                         name="name" 
                         onChange={onChange}
                         placeholder="Add user"
-                        size="15"
+                        size={15}
                         value={user}
                     />
                     <button className="bg-purple-500 h-7 rounded-full text-center text-white w-7 disabled:bg-gray-500" disabled={!user || user.length < 3} onClick={ addUser }>

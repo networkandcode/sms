@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
-export default async ( req: NextApiRequest, res: NextApiResponse<Data> ) => {
+const api = async ( req: NextApiRequest, res: NextApiResponse<any> ) => {
     const { method } = req
     const { operation, schema, table, records } = req.body
     const dataJson =  { operation, schema, table, records }
@@ -30,3 +30,5 @@ export default async ( req: NextApiRequest, res: NextApiResponse<Data> ) => {
         console.log(error)
       })
 }
+
+export default api

@@ -15,11 +15,10 @@ type Data = {
     name: string
 }
 
-export default function handler(
+const api = (
     req: NextApiRequest,
     res: NextApiResponse<Data>
-    ) {
-    console.log('req', req.method)  
+    ) => {
    
     if (req.method === 'POST') {
         const { user } = req.query
@@ -44,3 +43,5 @@ export default function handler(
         })
     }
 }
+
+export default api

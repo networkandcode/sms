@@ -23,7 +23,7 @@ const initialStatusData: Status = {
 const Term1 = () => {
     const router = useRouter()
     
-    const state = useStudentsContext()
+    const state: any = useStudentsContext()
     const { students } = state
     
     const [ helperText, setHelperText ] = useState({})
@@ -106,8 +106,6 @@ const Term1 = () => {
         }, err => {
             setStatus({ ...initialStatusData, err: err.message })
             setIsSaveDisabled(true)
-        }, progress => {
-            setStatus({ ...initialStatusData, progress: 'Saving...' })
         })
     
     }
@@ -123,13 +121,12 @@ const Term1 = () => {
         if(id) getExam()
     }, [ id ])
     
-    console.log('marks', marks)
     
     return (
         <form className="gap-8 grid grid-cols-1 px-8 text-md" onSubmit={saveForm}>
             <StatusProp status={status}/>
             
-            <h1 className="text-purple-500 text-xl"> {id.replaceAll('-', ' ')} exam score </h1>
+            <h1 className="font-bold text-purple-500 text-xl"> {id.replaceAll('-', ' ')} exam score </h1>
             
             { students.map( (student, sIdx) => (
                 <div className="border-2 p-2 rounded" key={`${student}-${sIdx}`} >
@@ -138,28 +135,28 @@ const Term1 = () => {
                         <input
                             className={formInput}
                             key={`${subject}-${idx}`} 
-                            maxLength="2"
+                            maxLength={2}
                             name={subject}
                             onBlur={onBlur}
                             onChange={e => { e.preventDefault(); onChange(e, student) }}
                             onFocus={e => { e.preventDefault(); onFocus(e, student) }}
                             placeholder={`${subject.at(0)}${subject.split(' ').at(1)?.at(0) || ''}`}
-                            size="1" 
+                            size={1}
                             value={ marks[student] ? marks[student][subject] : '' }
                         />
                     ))}
                     
-                    { marks[student] && <> 
-                        <div>
-                            Total: {Object.values(marks[student]).reduce((a,b) => parseInt(a) + parseInt(b), 0)},
-                            Average: {Object.values(marks[student]).reduce((a,b) => (parseInt(a) + parseInt(b))/2, 0)}, {' '}
-                            { Object.values(marks[student]).reduce((a,b) => (parseInt(a) + parseInt(b))/2, 0) >= 35 ? (
+                    { marks[student] && (
+                        <>
+                            Total: {Object.values(marks[student]).reduce((a: any, b: any) => parseInt(a) + parseInt(b), 0)},
+                            Average: {Object.values(marks[student]).reduce((a: any, b: any) => (parseInt(a) + parseInt(b))/2, 0)} {' '}
+                            { Object.values(marks[student]).reduce((a:any, b:any) => (parseInt(a) + parseInt(b))/2, 0) >= 35 ? (
                                 <span className="text-green-500"> Pass </span> 
                             ) : ( 
                                 <span className="text-amber-500"> Fail </span>
                             )}
-                        </div>
-                    </> }
+                        </>
+                    )}
                     
                     <div className="italic mx-2 text-purple-500"> {helperText[student]} </div>
                 </div>

@@ -3,7 +3,7 @@ import { useAuthContext } from '../hooks/useAuth'
 import { toTitleCase, validateName } from '../utils/functions'
 import axios from 'axios'
 import type { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 type Child = {
     classWithSection: string
@@ -30,15 +30,15 @@ const initialStatusData: Status = {
 }
 
 const ParentForm: NextPage = () => {
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     const { user } = state
     
     const [ child, setChild ] = useState(initialChildData)
     const [ children, setChildren ] = useState(initialChildrenData)
     const [ isSaveDisabled, setIsSaveDisabled ] = useState(true)
     
-    const [ parent, setParent ] = useState({})
-    const [ parents, setParents ] = useState([])
+    const [ parent, setParent ] = useState<any>({})
+    const [ parents, setParents ] = useState<any>([])
     
     const [ status, setStatus ]= useState(initialStatusData)
     
@@ -56,7 +56,7 @@ const ParentForm: NextPage = () => {
         })
     })
     
-    const onChange = e => {
+    const onChange = (e: any) => {
         e.preventDefault()
         let { name, value } = e.target
         
@@ -72,7 +72,7 @@ const ParentForm: NextPage = () => {
         }
     }
     
-    const addChild = async(e) => {
+    const addChild = async(e: any) => {
         e.preventDefault()
         
         setStatus({ ...initialStatusData, progress: 'Please wait...' })
@@ -107,7 +107,7 @@ const ParentForm: NextPage = () => {
         ).then(res => {
             const { data }= res
             if(data.length > 0) {
-                checkForDuplicateStudent()
+                checkForDuplicateStudent()                
             } else {
                 setStatus({ ...initialStatusData, err: `${child.name} is not found in ${child.classWithSection}`})
             }
@@ -123,8 +123,8 @@ const ParentForm: NextPage = () => {
             }
         ).then(res => {
             if ( 
-                res.data.some( parent => ( 
-                    parent.children.some( ch => ( 
+                res.data.some( (parent: any) => ( 
+                    parent.children.some( (ch: any) => ( 
                         ch.name === child.name && ch.classWithSection === child.classWithSection
                     ))
                 ))  
@@ -134,6 +134,7 @@ const ParentForm: NextPage = () => {
                 setChildren([ ...children, child ])
                 setIsSaveDisabled(false)
                 setChild(initialChildData)
+                setStatus({ ...initialStatusData })
             }
                 
         })
@@ -152,19 +153,15 @@ const ParentForm: NextPage = () => {
         })
     }
     
-    const rmChild = c => {
-        console.log(c)
+    const rmChild = (c: any) => {
         let temp = children
         let isRemoved: boolean = false
         
-        console.log(temp.length)
         children.forEach( (ch, idx) => {
             if (
-                c.classNo === ch.classNo
+                c.classWithSection === ch.classWithSection
                 &&
                 c.name === ch.name
-                &&
-                c.section === ch.section
             ) {
                 temp.splice(idx, 1)
                 isRemoved = true
@@ -172,21 +169,19 @@ const ParentForm: NextPage = () => {
         })
         
         if(isRemoved) {
-            console.log('removed')
             setChildren([ ...temp ])
             setIsSaveDisabled(false)
         }
     }
     
-    const saveProfile = async(e) => {
+    const saveProfile = async(e: any) => {
         e.preventDefault()
         let operation = 'insert'
         
-        if(parents.some(p => p.id === parent.id)) {
+        if(parents.some((p: any) => p.id === parent.id)) {
             operation = 'update'
         }
         
-        console.log({ ...parent, children })
         
         await axios.post(
             'api/db', 
@@ -198,14 +193,11 @@ const ParentForm: NextPage = () => {
                     { ...parent, children }
                 ]
             }
-        ).then( res => {
-            console.log('saved successfully')
+        ).then( (res: any) => {
             setStatus({ ...initialStatusData, res: 'Saved successfully' })
             setIsSaveDisabled(true)
-        }, err => {
+        }, (err: any) => {
             setStatus({ ...initialStatusData, err: err.message })
-        }, progress => {
-            setStatus({ ...initialStatusData, progress: 'Savning...' })
         })
     }
     
@@ -219,7 +211,7 @@ const ParentForm: NextPage = () => {
         let temp = { id: user.$id }
         
         if(parents.length > 0) {
-            parents.forEach( p => {
+            parents.forEach( (p: any) => {
                 if(p.id === user.$id) {
                     temp = p
                 }
@@ -251,9 +243,10 @@ const ParentForm: NextPage = () => {
     return (
         <div className="m-auto max-w-xs pt-2 text-md w-full">
         
-            <StatusProp status={status} />
             
             <div className="m-8">
+            <StatusProp status={status} />
+
             Student, Class & Section
                 <form className="bg-grey-500 flex justify-between mb-4 rounded text-lg" onSubmit={ addChild }> 
                     <div className="text-sm w-5/6">

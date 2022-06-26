@@ -7,6 +7,6 @@ export const server = {
     project: process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID
 }
 
-export const appwrite = new Appwrite()
+export const appwrite: any = new Appwrite()
     .setEndpoint(server.endpoint)
     .setProject(server.project)

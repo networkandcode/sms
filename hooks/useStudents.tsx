@@ -1,19 +1,8 @@
-import { validateName } from '../utils/functions'
+import { initialStatusData } from '../types'
+import { toTitleCase, validateName } from '../utils/functions'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { createContext, useContext, useEffect, useState } from 'react'
-
-type Status = {
-    err: string
-    progress: string
-    res: string
-}
-
-const initialStatusData: Status = {
-    err: '',
-    progress: '',
-    res: ''
-}
 
 const studentsContext = createContext({})
 export const useStudentsContext = () => useContext(studentsContext)
@@ -33,7 +22,7 @@ const useStudentsContextProvider = ()  => {
         e.preventDefault()
         const { value } = e.target
         if( validateName(value) )  {
-            setStudent(value)
+            setStudent(toTitleCase(value))
         } else {
             setStatus({ ...initialStatusData, err: 'Name not valid...' })
         }
@@ -110,14 +99,12 @@ const useStudentsContextProvider = ()  => {
             setIsSaveDisabled(true)
         }, err => {
             setStatus({ ...initialStatusData, err: err.message })
-        }, progress => {
-            setStatus({ ...initialStatusData, progress: 'Savning...' })
         })
     }
     
     useEffect(() => {
         if(cl) {
-            setStatus({ progress: 'Loading...'})
+            setStatus({ ...initialStatusData, progress: 'Loading...'})
             getClasses()
         }
     }, [ cl ])
@@ -125,11 +112,7 @@ const useStudentsContextProvider = ()  => {
     useEffect(() => {
         if(status?.res || status?.err || status?.progress ) {
             setTimeout(() => {
-                setStatus({
-                    progress: '',
-                    err: '',
-                    res: ''
-                })
+                setStatus({ ...initialStatusData })
             }, 3000)
         }
     }, [ status ])

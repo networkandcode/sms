@@ -5,7 +5,7 @@ export type TeamsResponse = {
     total: number
 }
 
-type Status = {
+export type Status = {
     res: string
     err: string
     progress: string

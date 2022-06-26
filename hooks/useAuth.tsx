@@ -1,19 +1,13 @@
-import { Status, User } from '../types'
+import { initialStatusData, Status, User } from '../types'
 import { appwrite } from '../utils/appwrite'
 import { useRouter } from 'next/router'
 import { createContext, useContext, useEffect, useState } from 'react'
 
-const initialUserData: User = {
+const initialUserData: any = {
     name: '',
     password: '',    
     role: '',
     username: ''
-}
-
-const emptyStatus: Status = {
-    res: '',
-    err: '',
-    progress: ''
 }
 
 const authContext = createContext({})
@@ -25,32 +19,22 @@ const useAuthContextProvider = () => {
     const router = useRouter()
     
     const [ user, setUser ] = useState(initialUserData)
-    const [ status, setStatus ] = useState(emptyStatus)
-    
-    const clearStatus = () => {
-        setStatus({
-            res: '',
-            err: ''
-        })
-    }
+    const [ status, setStatus ] = useState(initialStatusData)
     
     const getUser = async() => {
         await appwrite.account.get().then(
             res => {
                 setUser(res),
-                setStatus({ res: 'Authenticated successfully', err: '', progress: '' })
+                setStatus({ ...initialStatusData, res: 'Authenticated successfully' })
             },
             err => {
                 setUser({ $id: '' })
-                setStatus({ res: '', err: 'Redirecting to authenticate', progress: '' })
-            },
-            progress => {
-                setStatus({ res: '', err: '', progress: 'Retreiving account details' })
+                setStatus({ ...initialStatusData, err: 'Redirecting to authenticate' })
             }
         )
     }
     
-    const onChange = e => {
+    const onChange = (e: any) => {
         e.preventDefault()
         const { name, value } = e.target
         
@@ -75,21 +59,21 @@ const useAuthContextProvider = () => {
             && 
             authOnlyPaths.some( path => router.route === path ) 
         ) {
-            setStatus({ progress: 'Redirecting to login screen...' })
+            setStatus({ ...initialStatusData, progress: 'Redirecting to login screen...' })
             router.replace('/login')
         } else if(
-            process.env.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS.split(',').every( adminEmail => adminEmail !== user.email )
+            process?.env?.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS?.split(',').every( adminEmail => adminEmail !== user.email )
             && 
             superAdminOnlyPaths.some( path => router.route.startsWith(path) ) 
         ) {
-            setStatus({ progress: 'Redirecting to home screen...' })
+            setStatus({ ...initialStatusData, progress: 'Redirecting to home screen...' })
             router.replace('/')
         } else if(
             user.$id
             &&
             authPaths.some( path => router.route === path )
         ) {
-            setStatus({ progress: 'Redirecting to home screen...' })
+            setStatus({ ...initialStatusData, progress: 'Redirecting to home screen...' })
             router.replace('/')
         } else if(
             user?.$id.startsWith('parent-')
@@ -98,13 +82,13 @@ const useAuthContextProvider = () => {
         ){
             console.log('...')
         } else if(
-            (!user?.$id?.startsWith('admin-') && process.env.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS.split(',').every( adminEmail => adminEmail !== user.email ))
+            (!user?.$id?.startsWith('admin-') && process?.env?.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS?.split(',').every( adminEmail => adminEmail !== user.email ))
             &&
             adminPaths.some( path => router.route.startsWith(path) )
         ) {
             router.replace('/') 
         } else if(
-             ( user?.$id?.startsWith('admin-') || process.env.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS.split(',').some( adminEmail => adminEmail === user.email ) )
+             ( user?.$id?.startsWith('admin-') || process?.env?.NEXT_PUBLIC_APPWRITE_SUPER_ADMINS?.split(',').some( adminEmail => adminEmail === user.email ) )
              &&
              router.route === '/profile'
         ) {
@@ -113,14 +97,14 @@ const useAuthContextProvider = () => {
     }
 
     const sendEmailVerification = () => {
-        appwrite.account.createVerification(process.env.NEXT_PUBLIC_APPWRITE_EMAIL_VERIFICATION_URL).then(
+        appwrite.account.createVerification(process.env?.NEXT_PUBLIC_APPWRITE_EMAIL_VERIFICATION_URL).then(
             res => {
                 if(res){
-                    setStatus({ res: 'Email verification sent', err: '', progress: '' })
+                    setStatus({ ...initialStatusData, res: 'Email verification sent' })
                 }
             },
             err => {
-                setStatus({ res: '', err: err.message, progress: '' })
+                setStatus({ ...initialStatusData, err: err.message })
             }
         )
     }
@@ -129,12 +113,12 @@ const useAuthContextProvider = () => {
         await appwrite.account.createSession(user.username, user.password).then(
             res => {
                 if(res){
-                    setStatus({ res: 'Login successful' })
+                    setStatus({ ...initialStatusData, res: 'Login successful' })
                     getUser()
                 }
             },
             err => {
-                setStatus({ err: err.message })
+                setStatus({ ...initialStatusData, err: err.message })
             }
         )
     }
@@ -143,13 +127,10 @@ const useAuthContextProvider = () => {
         await appwrite.account.deleteSession('current').then(
             res => {
                 setUser({ ...initialUserData, $id: '' })
-                setStatus({ res: 'Logout successful', err: '', progress: '' })
+                setStatus({ ...initialStatusData, res: 'Logout successful' })
             },
             err => {
-                setStatus({ res: '', err: err.message, progress: '' })
-            },
-            progress => {
-                setStatus({ res: '', err: '', progress: 'Logout in progress' })
+                setStatus({ ...initialStatusData, err: err.message })
             }
         )
     }
@@ -163,17 +144,14 @@ const useAuthContextProvider = () => {
         await appwrite.account.create(id, username, password, name).then(
             res => {
                 if(res){
-                    setStatus({ res: 'Signup successful', err: '', progress: '' })
+                    setStatus({ ...initialStatusData, res: 'Signup successful' })
                     userLogin().then(() => {
                         sendEmailVerification()    
                     })
                 }
             },
             err => {
-                setStatus({ res: '', err: err.message, progress: '' })
-            },
-            progress => {
-                setStatus({ res: 'Signup in progress', err: '', progress: '' })
+                setStatus({ ...initialStatusData, err: err.message })
             }
         )
     }
@@ -196,7 +174,7 @@ const useAuthContextProvider = () => {
     useEffect(() => {
         if(status?.res || status?.err || status?.progress ) {
             setTimeout(() => {
-                clearStatus()
+                setStatus({ ...initialStatusData })
             }, 3000)
         }
     }, [ status ])

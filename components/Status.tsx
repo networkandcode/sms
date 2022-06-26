@@ -1,7 +1,7 @@
 import { useAuthContext } from '../hooks/useAuth'
 
 const Status = () => {
-    const state = useAuthContext()
+    const state: any = useAuthContext()
     const { status } = state
     
     return (

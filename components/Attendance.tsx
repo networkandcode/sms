@@ -1,8 +1,13 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-const Attendance = ({ classWithSection, name }) => {
-    const [ absentDates, setAbsentDates ] = useState([])
+type Props = {
+    classWithSection: string
+    name: string
+}
+
+const Attendance = ({ classWithSection, name }: Props) => {
+    const [ absentDates, setAbsentDates ] = useState<string[]>([])
     
     const getAttendance = async() => {
             
@@ -36,9 +41,9 @@ const Attendance = ({ classWithSection, name }) => {
         ).then(res => {
             const { data }= res
             if(data.length > 0) {
-                let temp = []
+                let temp: string[] = []
                 
-                data.forEach( d => {
+                data.forEach( (d: any) => {
                     temp.push(d.date)
                 })
                 setAbsentDates([ ...temp ])

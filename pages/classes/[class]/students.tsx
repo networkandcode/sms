@@ -1,14 +1,17 @@
 import StatusProp from '../../../components/StatusProp'
 import { useStudentsContext } from '../../../hooks/useStudents'
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 
 const Students: NextPage = () => {
-    const state = useStudentsContext()
-    console.log(state)
+    const router: any = useRouter()
+
+    const state: any = useStudentsContext()
     const { addStudent, onChange, isSaveDisabled, rmStudent, save, status, student, students } = state
     
     return  (
         <div className="m-auto mt-8 max-w-sm px-2 w-full">
+            <h1 className="font-bold text-purple-500 text-xl"> {router?.query?.class} students </h1>
             { status && <StatusProp status={status} /> }
             <div className="flex justify-between">
                 <input className="border mr-2 p-2 rounded text-sm w-full focus:outline-purple-500" name="student" onChange={onChange} placeholder="Student's name" type="text" value={student}/>

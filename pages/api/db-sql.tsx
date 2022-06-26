@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApires } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
-export default async ( req: NextApiRequest, res: NextApires<Data> ) => {
+const api = async ( req: NextApiRequest, res: NextApiResponse<any> ) => {
     const { method } = req
     const { operation, sql } = req.body
     const dataJson =  { operation, sql }
@@ -33,3 +33,5 @@ export default async ( req: NextApiRequest, res: NextApires<Data> ) => {
         console.log('err', error.message)
       })
 }
+
+export default api

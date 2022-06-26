@@ -1,23 +1,13 @@
+import { initialStatusData } from '../../types'
 import { appwrite } from '../../utils/appwrite'
 import Link from 'next/link'
 import { NextPage } from 'next/types'
 import { useEffect, useState } from 'react'
 
 const Teams: NextPage = () => {
-    const [ status, setStatus ] = useState({
-        res: '',
-        err: ''
-    })
-    
+    const [ status, setStatus ] = useState({ ...initialStatusData })    
     const [ team, setTeam ] = useState('')
     const [ teams, setTeams ] = useState([])
-    
-    const clearStatus = () => {
-        setStatus({
-            res: '',
-            err: ''
-        })
-    }
     
     const onChange = e => {
         e.preventDefault()
@@ -25,12 +15,10 @@ const Teams: NextPage = () => {
         value  = value.toLowerCase()
         
         if(!teams.includes(value)) {
-            clearStatus()
+            setStatus({ ...initialStatusData })
             setTeam(value)
         } else {
-            setStatus({
-                err: `${value} exists...`
-            })
+            setStatus({ ...initialStatusData, err: `${value} exists...` })
         }
     }
 
@@ -41,11 +29,13 @@ const Teams: NextPage = () => {
         promise.then( res => {
             setTeams([ ...teams, team ])
             setStatus({
+		...initialStatusData,
                 res: 'Team added successfully...'
             })
             
         }, err => {
             setStatus({
+		...initialStatusData,
                 err: err.message
             })
         })
@@ -64,12 +54,14 @@ const Teams: NextPage = () => {
                 temp.splice(idx, 1)
                 setTeams([ ...temp ])
                 setStatus({
+		    ...initialStatusData,
                     err: 'Team deleted successfully...'
                 })
             }
             
         }, err => {
             setStatus({
+                ...initialStatusData,
                 err: err.message
             })
         })
@@ -90,10 +82,12 @@ const Teams: NextPage = () => {
             setTeams([ ...temp ])
         
             setStatus({
+                ...initialStatusData,
                 res: 'Retrieved team list successfully...'
             })
         }, err => {
             setStatus({
+                ...initialStatusData,
                 err: err.message
             })
         })
@@ -103,7 +97,7 @@ const Teams: NextPage = () => {
     useEffect(() => {
         if(status?.res || status?.err) {
             setTimeout(() => {
-                clearStatus()
+                setStatus({ ...initialStatusData })
             }, 3000)
         }
     }, [ status ])
@@ -114,17 +108,19 @@ const Teams: NextPage = () => {
                 <p className="pb-2 text-green-500"> { status?.res } </p>
                 <p className="pb-2 text-red-500"> { status?.err } </p>
             </div>
+
+            <h1 className="font-bold text-purple-500 text-xl"> Teams </h1>
             
             <div className="m-8">
                 <div className="flex justify-between mb-2">
                     <input 
                         className="border mr-2 p-2 rounded focus:outline-purple-500" 
                         id="name"
-                        maxLength="15"
+                        maxLength={15}
                         name="name" 
                         onChange={onChange}
                         placeholder="Add team"
-                        size="15"
+                        size={15}
                         value={team}
                     />
                     <button className="bg-purple-500 h-7 rounded-full text-center text-white w-7 disabled:bg-gray-500" disabled={!team || team.length < 3} onClick={ addTeam }>

@@ -1,8 +1,13 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-const ExamScore = ({ classWithSection, name }) => {
-    const [ examScore, setExamScore ] = useState([])
+type Props = {
+    classWithSection: string
+    name: string
+}
+
+const ExamScore = ({ classWithSection, name }: Props) => {
+    const [ examScore, setExamScore ] = useState<any[]>([])
     
     const getExamScore = async() => {
         const operation = 'search_by_conditions'
@@ -38,7 +43,6 @@ const ExamScore = ({ classWithSection, name }) => {
         getExamScore()
     }, [ ])
     
-    console.log('name', name)
     return (
         <div className="mb-2">
             { examScore?.map ( (i, idx) => (
@@ -49,7 +53,7 @@ const ExamScore = ({ classWithSection, name }) => {
                         <p className="text-xl"> {i.id.split('-').at(-1).toUpperCase()}: </p>
                         
                         { Object.keys(i.marks[name]).map( (subject, index) => (
-                            <p className="italic"> {subject} : {i.marks[name][subject]} </p>
+                            <p key={`${i}-${idx}-${subject}-${index}`} className="italic"> {subject} : {i.marks[name][subject]} </p>
                         ))}
                     </>   
                     )}

@@ -1,3 +1,5 @@
+// todo
+
 import StatusProp from '../../../components/StatusProp'
 import { useAuthContext } from '../../../hooks/useAuth'
 import { addButton, rmButton } from '../../../styles'
@@ -10,7 +12,7 @@ import { useEffect, useState } from 'react'
 
 const Files: NextPage = () => {
     const router = useRouter()
-    const { user } = useAuthContext()
+    const { user }: any = useAuthContext()
     
     const [ file, setFile ] = useState({ name: '', uploader: user?.name })
     const [ fileObject, setFileObject ] = useState()
@@ -41,7 +43,6 @@ const Files: NextPage = () => {
             const { data } = await axios.put('/api/storage', body)
             const { url } = data
         
-            console.log(url)
             await axios.put(url, base64Data, {
                 headers: {
                     'Content-type': 'image/jpeg',
@@ -51,8 +52,6 @@ const Files: NextPage = () => {
                 setFiles([ ...files, file ])
                 setFile({ name: '', uploader: user?.name })
                 setStatus({ ...initialStatusData, res: 'File added' })        
-            }).catch(err => {
-                console.log(err)
             })
         }
     }
@@ -105,3 +104,5 @@ const Files: NextPage = () => {
         </div>
     )    
 }
+
+export default Files
